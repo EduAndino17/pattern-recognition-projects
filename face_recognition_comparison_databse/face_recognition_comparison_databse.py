@@ -1,6 +1,7 @@
 import cv2
 import pickle
 import os
+import time
 
 # Load the cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -37,18 +38,23 @@ while True:
         match_found = False
         name = None
 
-        # Compare the face to the existing faces
-        for i, existing_face in enumerate(existing_faces):
-            result = cv2.matchTemplate(existing_face, face, cv2.TM_CCOEFF_NORMED)
-            _, max_val, _, max_loc = cv2.minMaxLoc(result)
+        # Set the timer to 10 seconds
+        start_time = time.time()
+        
+        while (time.time() - start_time) < 10:
+            # Compare the face to the existing faces
+            for i, existing_face in enumerate(existing_faces):
+                result = cv2.matchTemplate(existing_face, face, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-            # If the maximum value is above a threshold, consider it a match
-            threshold = 0.8
-            if max_val > threshold:
-                match_found = True
-                name = list(existing_names.keys())[list(existing_names.values()).index(i)]
+                # If the maximum value is above a threshold, consider it a match
+                threshold = 0.8
+                if max_val > threshold:
+                    match_found = True
+                    name = list(existing_names.keys())[list(existing_names.values()).index(i)]
+                    break
+            if match_found:
                 break
-
         # If no match is found, ask for a name and save the face
         if not match_found:
             name = input("Please enter a name for the new face: ")
@@ -68,6 +74,9 @@ while True:
 
 # Release the webcam
 cap.release()
+
+# Save the existing faces and names to a file
+
 
 # Save the existing faces and names to a file
 with open("existing_faces.pkl", "wb") as file:
