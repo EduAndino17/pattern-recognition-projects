@@ -2,7 +2,7 @@ import cv2
 import os
 
 # Load the cascade classifier
-face_cascade = cv2.CascadeClassifier("path/to/haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")
 
 # Create a function to detect and recognize faces
 def detect_and_recognize_faces():
@@ -11,10 +11,10 @@ def detect_and_recognize_faces():
 
     # Create a dictionary to store the names and images of known faces
     known_faces = {}
-    for file in os.listdir("path/to/faces"):
+    for file in os.listdir("./"):
         if file.endswith(".jpg"):
             name = file.split(".")[0]
-            image = cv2.imread("path/to/faces/" + file)
+            image = cv2.imread("./" + file)
             known_faces[name] = image
 
     # Create a LBPH face recognizer
