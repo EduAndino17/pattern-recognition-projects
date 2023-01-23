@@ -76,9 +76,6 @@ while True:
 cap.release()
 
 # Save the existing faces and names to a file
-
-
-# Save the existing faces and names to a file
 with open("existing_faces.pkl", "wb") as file:
     pickle.dump((existing_faces, existing_names), file)
 
