@@ -18,7 +18,7 @@ def detect_and_recognize_faces():
             known_faces[name] = image
 
     # Create a LBPH face recognizer
-    recognizer = cv2.LBPHFaceRecognizer_create()
+    recognizer = cv2.createLBPHFaceRecognizer()
     recognizer.train(list(known_faces.values()), list(known_faces.keys()))
 
     while True:
