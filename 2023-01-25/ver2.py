@@ -1,16 +1,6 @@
 import cv2
 import face_recognition
 
-# Train the model with the known faces
-known_face_encodings, known_face_names = train_model()
-
-# Open the webcam
-camera = cv2.VideoCapture(0)
-
-# Set the frame width and height
-camera.set(3, 640)
-camera.set(4, 480)
-
 def train_model():
     known_face_encodings = []
     known_face_names = []
@@ -27,6 +17,15 @@ def train_model():
                 known_face_names.append(dirpath.split("/")[-1])
     return known_face_encodings, known_face_names
 
+# Train the model with the known faces
+known_face_encodings, known_face_names = train_model()
+
+# Open the webcam
+camera = cv2.VideoCapture(0)
+
+# Set the frame width and height
+camera.set(3, 640)
+camera.set(4, 480)
 
 while True:
     # Get a frame from the webcam
