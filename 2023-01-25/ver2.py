@@ -23,7 +23,7 @@ def compare_to_existing_faces(face_encoding):
     return name
 
 # Open the camera
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 
 # Set the frame width and height
 camera.set(3, 640)
