@@ -1,5 +1,6 @@
 import cv2
 import face_recognition
+import os
 
 def train_model():
     known_face_encodings = []
