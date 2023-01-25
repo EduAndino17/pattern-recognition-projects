@@ -1,4 +1,6 @@
 import cv2
+import time
+import os
 import face_recognition
 
 def compare_to_existing_faces(face_encoding):
@@ -20,34 +22,50 @@ def compare_to_existing_faces(face_encoding):
         name = known_face_names[first_match_index]
     return name
 
-# Load the cascade classifier
+# Open the camera
+camera = cv2.VideoCapture(0)
+
+# Set the frame width and height
+camera.set(3, 640)
+camera.set(4, 480)
+
+# Wait for the camera to warm up
+time.sleep(2)
+
+# Load the haar cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
-# Load the image
-image = cv2.imread("image.jpg")
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# Start the camera
+while True:
+    ret, frame = camera.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-# Perform face detection
-faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    # If a face is detected
+    if len(faces) > 0:
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
-# Draw a rectangle around the faces
-for (x, y, w, h) in faces:
-    cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
-    face_encoding = face_recognition.face_encodings(gray[y:y+h, x:x+w])[0]
-    # Compare the detected face to existing faces in the directory
-    match = compare_to_existing_faces(face_encoding)
-    if match is None:
-        #Take the picture name from user
-        picture_name = input("Enter picture name:")
-        cv2.imwrite(picture_name +".jpg", image)
-        print("New face added!")
+        # Get the face encoding
+        face_encoding = face_recognition.face_encodings(gray[y:y+h, x:x+w])[0]
+
+        # Compare the detected face to existing faces in the directory
+        match = compare_to_existing_faces(face_encoding)
+
+        # If there is no match
+        if match is None:
+            #Take the picture name from user
+            picture_name = input("Enter picture name:")
+            cv2.imwrite("faces/"+picture_name +".jpg", frame)
+            print("New face added!")
+            break
+        else:
+            print("Welcome back, " + match)
+
+    cv2.imshow("Camera", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    else:
-        print("Welcome back, " + match)
-        break
-    cv2.imwrite("detected_face.jpg", image)
 
-# Show the original image
-cv2.imshow("Original Image", image)
-cv2.waitKey(0)
+# Release the camera and close the window
+camera.release()
 cv2.destroyAllWindows()
